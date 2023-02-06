@@ -9,6 +9,5 @@
         Task Add(TEntity entity);
         Task Update(TEntity entity);
         Task Delete(TEntity entity);
-        Task Delete2(TEntity entity);
     }
 }
