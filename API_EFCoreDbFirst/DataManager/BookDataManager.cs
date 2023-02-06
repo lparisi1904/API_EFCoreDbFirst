@@ -44,6 +44,7 @@ namespace API_EFCoreDbFirst.DataManager
                 .Reference(r => r.Publisher)
                 .Load();
 
+
             return book;
         }
 
