@@ -23,6 +23,8 @@ public partial class BookStoreContext : DbContext
 
     public virtual DbSet<BookCategory> BookCategories { get; set; }
 
+    public virtual DbSet<BookAuthors> BookAuthors { get; set; }
+
     public virtual DbSet<Publisher> Publishers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
