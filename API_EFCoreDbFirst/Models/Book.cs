@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace API_EFCoreDbFirst.Models;
 
@@ -11,6 +12,7 @@ public partial class Book
         BookAuthors = new List<BookAuthors>();
     }
 
+    [Key]
     public long Id { get; set; }
 
     public string Title { get; set; } = null!;

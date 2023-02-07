@@ -17,7 +17,7 @@ namespace API_EFCoreDbFirst.DataManager
 
         public async Task Add(Author entity)
         {
-            _bookStoreContext.Authors.AddAsync(entity);
+            await _bookStoreContext.Authors.AddAsync(entity);
             await _bookStoreContext.SaveChangesAsync();
         }
 

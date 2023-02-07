@@ -5,6 +5,8 @@ using API_EFCoreDbFirst.Repository;
 using Microsoft.EntityFrameworkCore;
 
 
+#region builder
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,6 +29,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+#endregion
+
+
+#region app
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -41,3 +47,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+#endregion

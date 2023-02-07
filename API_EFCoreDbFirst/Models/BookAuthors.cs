@@ -1,7 +1,10 @@
-﻿namespace API_EFCoreDbFirst.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace API_EFCoreDbFirst.Models
 {
     public partial class BookAuthors
     {
+        [Key]
         public long BookId { get; set; }
         public long AuthorId { get; set; }
 
