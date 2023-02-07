@@ -18,11 +18,7 @@ namespace API_EFCoreDbFirst.Controllers
         }
 
         [HttpGet]
-        //public IActionResult Get()
-        //{
-        //    var authors = _dataRepository.GetAll();
-        //    return Ok(authors);
-        //}
+
         public IActionResult Get()
         {
             var authors = _repository.GetAll();
@@ -34,7 +30,6 @@ namespace API_EFCoreDbFirst.Controllers
 
             return Ok(authors);
         }
-        
 
     }
 }
