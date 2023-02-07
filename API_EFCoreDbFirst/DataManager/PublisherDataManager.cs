@@ -25,6 +25,11 @@ namespace API_EFCoreDbFirst.DataManager
             await _bookStoreContext.SaveChangesAsync();
         }
 
+        public Task Delete(Task<Publisher> publisher)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Publisher> Get(long id)
         {
             return await _bookStoreContext.Publishers
@@ -45,6 +50,16 @@ namespace API_EFCoreDbFirst.DataManager
         }
 
         public Task Update(Publisher entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(Publisher entityToUpdate, Publisher entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(Task<Author> authorToUpdate, Author author)
         {
             throw new NotImplementedException();
         }

@@ -24,6 +24,11 @@ namespace API_EFCoreDbFirst.DataManager
             throw new NotImplementedException();
         }
 
+        public Task Delete(Task<Publisher> publisher)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Book?> Get(long id)
         {
            // _bookStoreContext.ChangeTracker.LazyLoadingEnabled = false;
@@ -59,6 +64,16 @@ namespace API_EFCoreDbFirst.DataManager
         }
 
         public Task Update(Book entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(Book entityToUpdate, Book entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(Task<Author> authorToUpdate, Author author)
         {
             throw new NotImplementedException();
         }

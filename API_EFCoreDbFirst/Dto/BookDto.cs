@@ -9,5 +9,6 @@ namespace API_EFCoreDbFirst.Dto
 
         public PublisherDto Publisher { get; set; }
         public ICollection<AuthorDto> Authors { get; set; }
+
     }
 }
