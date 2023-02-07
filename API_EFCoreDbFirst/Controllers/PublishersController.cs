@@ -11,28 +11,28 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly IDataRepository<Publisher, PublisherDto> _repository;
+        private readonly IDataRepository<Publisher, PublisherRec> _db;
 
-        public PublishersController(IDataRepository<Publisher, PublisherDto> repository)  
-            => _repository = repository;
+        public PublishersController(IDataRepository<Publisher, PublisherRec> repository)  
+            => _db = repository;
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                var publisher = _repository.GetAsync(id);
+                var publisher = _db.GetAsync(id);
 
                 if (publisher == null)
-                    return NotFound("L'Editore non può essere trovato..");
+                    return NotFound("L'editore non può essere trovato..");
 
-                await _repository.DeleteAsync(publisher);
+                await _db.DeleteAsync(publisher);
 
-                return Ok(publisher);
+                return NoContent();
             }
             catch (WebException ex)
             {
-                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+                throw new Exception($"Un errore è avvenuto -> Tipo di errore: {ex.Message}");
             }
         }
     }

@@ -13,9 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ConnStr");
 builder.Services.AddDbContext<BookStoreContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IDataRepository<Author, AuthorDto>, AuthorDataManager>();
-builder.Services.AddScoped<IDataRepository<Book, BookDto>, BookDataManager>();
-builder.Services.AddScoped<IDataRepository<Publisher, PublisherDto>, PublisherDataManager>();
+builder.Services.AddScoped<IDataRepository<Author, AuthorRec >, AuthorDataManager>();
+builder.Services.AddScoped<IDataRepository<Book, BookRec>, BookDataManager>();
+builder.Services.AddScoped<IDataRepository<Publisher, PublisherRec>, PublisherDataManager>();
 builder.Services.AddControllers()
     .AddNewtonsoftJson(
         options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

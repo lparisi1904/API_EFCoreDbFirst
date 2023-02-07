@@ -11,11 +11,12 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IDataRepository<Author, AuthorDto> _repository;
+        private readonly IDataRepository<Author, AuthorRec> _db;
         
         // DI
-        public AuthorsController(IDataRepository<Author, AuthorDto> repository) 
-            => _repository = repository;
+        public AuthorsController(IDataRepository<Author, 
+                                 AuthorRec> repository) 
+            => _db = repository;
 
 
 
@@ -24,7 +25,7 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                var authors = _repository.GetAll();
+                var authors = _db.GetAll();
 
                 if (authors == null)
                     return NotFound("Autori non presenti in archivio.");
@@ -42,7 +43,7 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                var author = _repository.GetAsync(id);
+                var author = _db.GetAsync(id);
 
                 if (author == null)
                     return StatusCode(StatusCodes.Status204NoContent, $"Nessun Autore trovato per id: {id}");
@@ -64,7 +65,7 @@ namespace API_EFCoreDbFirst.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-               await _repository.AddAsync(author);
+               await _db.AddAsync(author);
 
                 return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
@@ -88,12 +89,12 @@ namespace API_EFCoreDbFirst.Controllers
                 if (author is null)
                     return StatusCode(StatusCodes.Status500InternalServerError, "L'autore non puo essere aggiornato.");
 
-                var authorToUpdate = _repository.GetAsync(id);
+                var authorToUpdate = _db.GetAsync(id);
 
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                await _repository.UpdateAsync(authorToUpdate, author);
+                await _db.UpdateAsync(authorToUpdate, author);
 
                 return NoContent();
 

@@ -4,6 +4,11 @@ namespace API_EFCoreDbFirst.Repository
 {
     public interface IDataRepository<TEntity, TDto>
     {
+        /// <summary>
+        /// add a new interface named IDataRepository 
+        /// </summary>
+        /// <param name="xx">...</param>
+        /// <returns></returns>
         Task<List<TEntity>> GetAll();
         //IEnumerable<TEntity> GetAll();
         Task<TEntity> GetAsync(long id);

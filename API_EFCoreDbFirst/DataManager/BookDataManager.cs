@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class BookDataManager: IDataRepository<Book, BookDto>
+    public class BookDataManager: IDataRepository<Book, BookRec>
     {
-        readonly BookStoreContext _storeContext;
+        readonly BookStoreContext _db;
 
         public BookDataManager(BookStoreContext storeContext) { 
-            _storeContext = storeContext;
+            _db = storeContext;
         }
 
         public Task AddAsync(Book entity)
@@ -32,9 +32,9 @@ namespace API_EFCoreDbFirst.DataManager
 
         public async Task<Book?> GetAsync(long id)
         {
-           // _bookStoreContext.ChangeTracker.LazyLoadingEnabled = false;
+           // _db.ChangeTracker.LazyLoadingEnabled = false;
 
-            var book = _storeContext.Books
+            var book = _db.Books
                 .SingleOrDefault(x=> x.Id == id);
 
             if (book == null)
@@ -43,11 +43,11 @@ namespace API_EFCoreDbFirst.DataManager
             // CARICAMENTO ESPLICITO..
             //È possibile caricare in modo esplicito una proprietà di navigazione tramite l'API ..
             // viene utilizzato per ottenere i dettagli di un file (Book..)
-            _storeContext.Entry(book)
+            _db.Entry(book)
                 .Collection(b => b.BookAuthors)
                 .Load();
 
-            _storeContext.Entry(book)
+            _db.Entry(book)
                 .Reference(r => r.Publisher)
                 .Load();
 
@@ -59,21 +59,21 @@ namespace API_EFCoreDbFirst.DataManager
             throw new NotImplementedException();
         }
 
-        private static BookDto BookToDTO(Book book) =>
+        private static BookRec BookToDTO(Book book) =>
         new()
         {
             Id= book.Id,
             Title= book.Title,
-            Publisher = new PublisherDto ()
+            Publisher = new PublisherRec ()
             {
                 Id= book.Id,
                 Name = book.Title
             },
-            Authors = (ICollection<AuthorDto>)book.BookAuthors.Select(x => x.Author)
+            Authors = (ICollection<AuthorRec >)book.BookAuthors.Select(x => x.Author)
         };
 
 
-        public Task<BookDto> GetDto(long id)
+        public Task<BookRec> GetDto(long id)
         {
             throw new NotImplementedException();
         }

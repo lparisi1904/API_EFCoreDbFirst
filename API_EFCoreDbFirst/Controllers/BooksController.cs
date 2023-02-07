@@ -11,11 +11,11 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IDataRepository<Book, BookDto> _dataRepository;
+        private readonly IDataRepository<Book, BookRec> _db;
 
         // DI...
-        public BooksController(IDataRepository<Book, BookDto> dataRepository)
-            => _dataRepository = dataRepository;
+        public BooksController(IDataRepository<Book, BookRec> dataRepository)
+            => _db = dataRepository;
 
         // GET: api/Books/5
         [HttpGet("{id}")]
@@ -23,7 +23,7 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                var book = await _dataRepository.GetAsync(id);
+                var book = await _db.GetAsync(id);
 
                 if (book == null)
                     return StatusCode(StatusCodes.Status204NoContent, $"Nessun libro trovato per id: {id}");
@@ -41,7 +41,7 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                await _dataRepository.AddAsync(book);
+                await _db.AddAsync(book);
 
                 return CreatedAtAction("GetBook", new { id = book.Id }, book);
             }
@@ -59,7 +59,7 @@ namespace API_EFCoreDbFirst.Controllers
         //        if (id != book.Id)
         //            return BadRequest();
 
-        //        await _dataRepository.UpdateAsync(book, book);
+        //        await _db.UpdateAsync(book, book);
 
         //        return NoContent();
         //    }
@@ -74,10 +74,10 @@ namespace API_EFCoreDbFirst.Controllers
         //{
         //    try
         //    {
-        //         _dataRepository.GetAsync(id);
+        //         _db.GetAsync(id);
 
-        //        //(bool status, string message) = await _dataRepository.DeleteAsync(book);
-        //        await _dataRepository.DeleteAsync(book);
+        //        //(bool status, string message) = await _db.DeleteAsync(book);
+        //        await _db.DeleteAsync(book);
 
         //        return StatusCode(StatusCodes.Status200OK, book);
         //    }

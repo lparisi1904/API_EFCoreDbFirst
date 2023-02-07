@@ -5,24 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class PublisherDataManager : IDataRepository<Publisher, PublisherDto>
+    public class PublisherDataManager : IDataRepository<Publisher, PublisherRec>
     {
-        readonly BookStoreContext _bookStoreContext;
+        readonly BookStoreContext _db;
 
         public PublisherDataManager(BookStoreContext context) { 
-            _bookStoreContext= context;
+            _db= context;
         }
 
         public async Task AddAsync(Publisher entity)
         {
-            _bookStoreContext.Add(entity);
-            await _bookStoreContext.SaveChangesAsync();
+            _db.Add(entity);
+            await _db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Publisher entity)
         {
-            _bookStoreContext.Remove(entity);
-            await _bookStoreContext.SaveChangesAsync();
+            _db.Remove(entity);
+            await _db.SaveChangesAsync();
         }
 
         public Task DeleteAsync(Task<Publisher> publisher)
@@ -32,19 +32,19 @@ namespace API_EFCoreDbFirst.DataManager
 
         public async Task<Publisher> GetAsync(long id)
         {
-            return await _bookStoreContext.Publishers
+            return await _db.Publishers
               .Include(a => a.Books)
               .SingleAsync(b => b.Id == id);
         }
 
         public async Task<List<Publisher>> GetAll()
         {
-            return await _bookStoreContext.Publishers
+            return await _db.Publishers
                 .Include(a => a.Books)
                 .ToListAsync();
         }
 
-        public Task<PublisherDto> GetDto(long id)
+        public Task<PublisherRec> GetDto(long id)
         {
             throw new NotImplementedException();
         }

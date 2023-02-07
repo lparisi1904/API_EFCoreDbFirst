@@ -1,0 +1,42 @@
+﻿RECORD
+---------
+Utilizzare i Record come DTO per oggetti immutabili e/o di valore..
+È possibile utilizzare i tipi di struttura per progettare tipi incentrati sui dati che forniscono uguaglianza di valore e un comportamento minimo o nullo . Ma per modelli di dati relativamente grandi, i tipi di struttura presentano alcuni svantaggi :
+
+Casi d'uso di record C#:
+------------------------
+I record sostituiranno il modello Fluent Interface in C#. Il modello Test Data Builder è un ottimo esempio qui. Invece di scrivere il tuo codice boilerplate, ora puoi utilizzare la nuova funzione with e risparmiare un sacco di tempo e fatica.
+
+Il record è buono per i DTO
+
+Potrebbero inoltre essere necessarie classi di dati temporanee durante il caricamento o il recupero dei dati dal database o durante l'esecuzione di una pre-elaborazione. Questo è simile ai DTO precedenti, ma invece di fungere da contratti di dati tra l'applicazione e i sistemi esterni, queste classi di dati fungono da DTO tra i diversi livelli del proprio sistema. I record C# sono ottimi anche per questo.
+
+Infine, non tutte le applicazioni richiedono un modello di dominio ricco e completamente incapsulato. 
+Nella maggior parte dei casi più semplici che non richiedono molto incapsulamento, i record C# andrebbero bene. 
+altrimenti usa l' oggetto valore DDD
+
+------
+
+Non supportano l'ereditarietà !
+Sono meno efficienti nel determinare l'uguaglianza di valore . Per i tipi di valore, il ValueType.Equalsmetodo usa la reflection per trovare tutti i campi. Per i record, il compilatore genera il metodo Equals. In pratica, l'implementazione dell'uguaglianza di valore nei record è misurabilmente più veloce.
+Usano più memoria in alcuni scenari poiché ogni istanza ha una copia completa di tutti i dati. I tipi di record sono tipi di riferimento, quindi un'istanza di record contiene solo un riferimento ai dati.
+Sebbene i record possano essere modificabili, sono principalmente destinati a supportare modelli di dati immutabili. Il tipo di record offre le seguenti funzionalità:
+
+Sintassi concisa per la creazione di un tipo di riferimento con proprietà immutabili
+
+Uguaglianza di valore
+
+La sintassi concisa per la mutazione non distruttiva
+
+Formattazione incorporata per la visualizzazione
+
+Supporto per le gerarchie ereditarie
+
+I tipi di record presentano alcuni svantaggi:
+
+I record C# non implementano l'interfaccia IComparable
+
+In termini di incapsulamento, recordssono molto meglio structsperché non puoi nascondere il costruttore senza parametri in una struttura, ma Recordha ancora un incapsulamento scadente e possiamo istanziare un oggetto con uno stato non valido.
+
+Non avere il controllo sui controlli di uguaglianza
+

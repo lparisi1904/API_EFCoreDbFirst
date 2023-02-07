@@ -5,26 +5,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class AuthorDataManager : IDataRepository<Author, AuthorDto>
+    public class AuthorDataManager : IDataRepository<Author, AuthorRec >
     {
-        readonly BookStoreContext _bookStoreContext;
+        readonly BookStoreContext _db;
 
         public AuthorDataManager(BookStoreContext storeContext)
         {
-            _bookStoreContext= storeContext;
+            _db= storeContext;
         }
             
 
         public async Task AddAsync(Author entity)
         {
-            await _bookStoreContext.Authors.AddAsync(entity);
-            await _bookStoreContext.SaveChangesAsync();
+            await _db.Authors.AddAsync(entity);
+            await _db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Author entity)
         {
-            _bookStoreContext.Authors.Remove(entity);
-            await _bookStoreContext.SaveChangesAsync();
+            _db.Authors.Remove(entity);
+            await _db.SaveChangesAsync();
         }
 
         public Task DeleteAsync(Task<Publisher> publisher)
@@ -34,7 +34,7 @@ namespace API_EFCoreDbFirst.DataManager
 
         public async Task<Author> GetAsync(long id)
         {
-            var author = _bookStoreContext.Authors
+            var author = _db.Authors
                .FirstOrDefaultAsync(b => b.Id == id);
 
             return await author;
@@ -42,21 +42,21 @@ namespace API_EFCoreDbFirst.DataManager
 
         public async Task<List<Author>> GetAll()
         {
-            return await _bookStoreContext.Authors
+            return await _db.Authors
                 .Include(a=> a.AuthorContact)
                 .ToListAsync();
         }
 
-        public async Task<AuthorDto> GetDto(long id)
+        public async Task<AuthorRec> GetDto(long id)
         {
-            _bookStoreContext.ChangeTracker.LazyLoadingEnabled = true;
+            _db.ChangeTracker.LazyLoadingEnabled = true;
 
             var context = new BookStoreContext();
 
             var author = context.Authors
                 .SingleOrDefaultAsync(b => b.Id == id);
 
-            return AuthorDtoMapper.MapToDto(await author);
+            return AuthorMapperRec.MapToRecord(await author);
         }
 
         public Task Update(Author entity)

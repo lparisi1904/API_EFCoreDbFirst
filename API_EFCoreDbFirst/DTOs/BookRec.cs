@@ -2,13 +2,13 @@
 
 namespace API_EFCoreDbFirst.Dto
 {
-    public class BookDto
+    public record BookRec
     {
         public long Id { get; set; }
         public string Title { get; set; }
 
-        public PublisherDto Publisher { get; set; }
-        public ICollection<AuthorDto> Authors { get; set; }
+        public PublisherRec Publisher { get; set; }
+        public ICollection<AuthorRec> Authors { get; set; }
 
     }
 }
