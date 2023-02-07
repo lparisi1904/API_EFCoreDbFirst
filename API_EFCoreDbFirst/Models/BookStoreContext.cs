@@ -79,22 +79,6 @@ public partial class BookStoreContext : DbContext
                 .HasForeignKey(d => d.PublisherId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Book__PUBLISHER___412EB0B6");
-
-            //entity.HasMany(d => d.book).WithMany(p => p.)
-            //    .UsingEntity<Dictionary<string, object>>(
-            //        "BookAuthor",
-            //        r => r.HasOne<Author>().WithMany()
-            //            .HasForeignKey("AuthorId")
-            //            .OnDelete(DeleteBehavior.ClientSetNull)
-            //            .HasConstraintName("FK__BookAutho__Autho__44FF419A"),
-            //        l => l.HasOne<Book>().WithMany()
-            //            .HasForeignKey("BookId")
-            //            .OnDelete(DeleteBehavior.ClientSetNull)
-            //            .HasConstraintName("FK__BookAutho__BookI__440B1D61"),
-            //        j =>
-            //        {
-            //            j.HasKey("BookId", "AuthorId").HasName("PK__BookAuth__6AED6DC453D13EB6");
-            //        });
         });
 
         modelBuilder.Entity<BookCategory>(entity =>

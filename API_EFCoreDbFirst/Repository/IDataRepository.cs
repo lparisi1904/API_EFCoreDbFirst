@@ -6,12 +6,12 @@ namespace API_EFCoreDbFirst.Repository
     {
         Task<List<TEntity>> GetAll();
         //IEnumerable<TEntity> GetAll();
-        Task<TEntity> Get(long id);
+        Task<TEntity> GetAsync(long id);
         Task<TDto> GetDto(long id);
-        Task Add(TEntity entity);
-        Task Update(TEntity entityToUpdate, TEntity entity);
-        Task Delete(TEntity entity);
-        Task Update(Task<Author> authorToUpdate, Author author);
-        Task Delete(Task<Publisher> publisher);
+        Task AddAsync(TEntity entity);
+        Task UpdateAsync(TEntity entityToUpdate, TEntity entity);
+        Task DeleteAsync(TEntity entity);
+        Task UpdateAsync(Task<Author> authorToUpdate, Author author);
+        Task DeleteAsync(Task<Publisher> publisher);
     }
 }

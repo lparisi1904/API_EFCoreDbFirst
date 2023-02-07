@@ -13,24 +13,24 @@ namespace API_EFCoreDbFirst.DataManager
             _bookStoreContext= context;
         }
 
-        public async Task Add(Publisher entity)
+        public async Task AddAsync(Publisher entity)
         {
             _bookStoreContext.Add(entity);
             await _bookStoreContext.SaveChangesAsync();
         }
 
-        public async Task Delete(Publisher entity)
+        public async Task DeleteAsync(Publisher entity)
         {
             _bookStoreContext.Remove(entity);
             await _bookStoreContext.SaveChangesAsync();
         }
 
-        public Task Delete(Task<Publisher> publisher)
+        public Task DeleteAsync(Task<Publisher> publisher)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Publisher> Get(long id)
+        public async Task<Publisher> GetAsync(long id)
         {
             return await _bookStoreContext.Publishers
               .Include(a => a.Books)
@@ -54,12 +54,12 @@ namespace API_EFCoreDbFirst.DataManager
             throw new NotImplementedException();
         }
 
-        public Task Update(Publisher entityToUpdate, Publisher entity)
+        public Task UpdateAsync(Publisher entityToUpdate, Publisher entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Task<Author> authorToUpdate, Author author)
+        public Task UpdateAsync(Task<Author> authorToUpdate, Author author)
         {
             throw new NotImplementedException();
         }

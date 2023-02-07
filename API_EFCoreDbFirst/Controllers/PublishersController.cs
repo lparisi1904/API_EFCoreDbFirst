@@ -3,6 +3,7 @@ using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API_EFCoreDbFirst.Controllers
 {
@@ -18,16 +19,21 @@ namespace API_EFCoreDbFirst.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var publisher = _repository.Get(id);
+            try
+            {
+                var publisher = _repository.GetAsync(id);
 
-            if (publisher == null)
-                return NotFound("L'Editore non può essere trovato..");
+                if (publisher == null)
+                    return NotFound("L'Editore non può essere trovato..");
 
-            await _repository.Delete(publisher);
+                await _repository.DeleteAsync(publisher);
 
-            return Ok(publisher);
-
+                return Ok(publisher);
+            }
+            catch (WebException ex)
+            {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+            }
         }
-
     }
 }

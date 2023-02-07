@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using API_EFCoreDbFirst.Repository;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Dto;
+using System.Net;
 
 namespace API_EFCoreDbFirst.Controllers
 {
@@ -12,78 +13,95 @@ namespace API_EFCoreDbFirst.Controllers
     {
         private readonly IDataRepository<Author, AuthorDto> _repository;
         
+        // DI
         public AuthorsController(IDataRepository<Author, AuthorDto> repository) 
             => _repository = repository;
+
+
 
         [HttpGet]
         public IActionResult Get()
         {
-            var authors = _repository.GetAll();
-
-            if (authors == null)
+            try
             {
-                return NotFound("Authors not found.");
-            }
+                var authors = _repository.GetAll();
 
-            return Ok(authors);
+                if (authors == null)
+                    return NotFound("Autori non presenti in archivio.");
+
+                return StatusCode(StatusCodes.Status200OK, authors);
+            }
+            catch (WebException ex)
+            {
+              throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}", Name = "GetAuthor")]
-        public ActionResult Get(long id)
+        public ActionResult GetAuthor(long id)
         {
-            var author = _repository.Get(id);
+            try
+            {
+                var author = _repository.GetAsync(id);
 
-            if (author == null)
-                return NotFound();
+                if (author == null)
+                    return StatusCode(StatusCodes.Status204NoContent, $"Nessun Autore trovato per id: {id}");
 
-            return Ok(author);
+                return StatusCode(StatusCodes.Status200OK, author);
+            }
+            catch (WebException ex)
+            {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+            }
         }
 
-        // POST: api/authors
+        // POST: api/GetBook
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] Author author)
+        public async Task<ActionResult> AddAuthor([FromBody] Author author)
         {
-            if (author is null)
-                return NotFound("Autore non trovato..");
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+               await _repository.AddAsync(author);
 
-           await _repository.Add(author);
+                return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
+                // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
 
-            // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
-            return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
-           
-            // oppure CreatedAtRoute...
-            //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
+                // oppure con CreatedAtRoute...
+                //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
+
+            }
+            catch (WebException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"{author.Name} could not be added.");
+            }
         }
 
         // PUT: api/Authors/1
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, [FromBody] Author author)
+        public async Task<ActionResult> UpdateAuthor(int id, [FromBody] Author author)
         {
-            if (author is null)
-                return BadRequest();
+            try
+            {
+                if (author is null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, "L'autore non puo essere aggiornato.");
 
-            var authorToUpdate = _repository.Get(id);
+                var authorToUpdate = _repository.GetAsync(id);
 
-            if (authorToUpdate == null)
-                return NotFound("Autore non trovato..");
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+                await _repository.UpdateAsync(authorToUpdate, author);
 
-            await _repository.Update(authorToUpdate, author);
+                return NoContent();
 
-            return NoContent();
+            }
+            catch (WebException ex)
+            {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+            }
         }
-
-
-
-
-
-
-
-
     }
 }

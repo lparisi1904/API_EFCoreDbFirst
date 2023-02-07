@@ -3,6 +3,7 @@ using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API_EFCoreDbFirst.Controllers
 {
@@ -18,14 +19,72 @@ namespace API_EFCoreDbFirst.Controllers
 
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult> GetBook(int id)
         {
-            var book = await _dataRepository.Get(id);
+            try
+            {
+                var book = await _dataRepository.GetAsync(id);
 
-            if (book == null)
-                return NotFound("Libro non trovato..");
+                if (book == null)
+                    return StatusCode(StatusCodes.Status204NoContent, $"Nessun libro trovato per id: {id}");
 
-            return Ok(book);
+                return StatusCode(StatusCodes.Status200OK, book);
+            }
+            catch (WebException ex)
+            {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+            }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Book>> AddBook(Book book)
+        {
+            try
+            {
+                await _dataRepository.AddAsync(book);
+
+                return CreatedAtAction("GetBook", new { id = book.Id }, book);
+            }
+            catch (WebException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non puo essere aggiunto.");
+            }
+        }
+
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateBook(int id, Book book)
+        //{
+        //    try
+        //    {
+        //        if (id != book.Id)
+        //            return BadRequest();
+
+        //        await _dataRepository.UpdateAsync(book, book);
+
+        //        return NoContent();
+        //    }
+        //    catch (WebException)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non  puo essere aggiornato");
+        //    }
+        //}
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteBook(int id, Book book)
+        //{
+        //    try
+        //    {
+        //         _dataRepository.GetAsync(id);
+
+        //        //(bool status, string message) = await _dataRepository.DeleteAsync(book);
+        //        await _dataRepository.DeleteAsync(book);
+
+        //        return StatusCode(StatusCodes.Status200OK, book);
+        //    }
+        //    catch (WebException)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non  puo essere aggiornato");
+        //    }
+        //}
     }
 }
