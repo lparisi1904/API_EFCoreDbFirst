@@ -26,9 +26,8 @@ namespace API_EFCoreDbFirst.Controllers
                 var book = await _db.GetAsync(id);
 
                 if (book == null)
-                    return StatusCode(StatusCodes.Status204NoContent, $"Nessun libro trovato per id: {id}");
-
-                return StatusCode(StatusCodes.Status200OK, book);
+                    return NotFound();
+                return Ok(book);
             }
             catch (WebException ex)
             {
@@ -45,7 +44,7 @@ namespace API_EFCoreDbFirst.Controllers
 
                 return CreatedAtAction("GetBook", new { id = book.Id }, book);
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non puo essere aggiunto.");
             }

@@ -29,7 +29,7 @@ namespace API_EFCoreDbFirst.Controllers
                 if (authors == null)
                     return NotFound("Autori non presenti in archivio.");
 
-                return StatusCode(StatusCodes.Status200OK, authors);
+                return Ok(authors);
             }
             catch (WebException ex)
             {
@@ -45,9 +45,9 @@ namespace API_EFCoreDbFirst.Controllers
                 var author = _db.GetAsync(id);
 
                 if (author == null)
-                    return StatusCode(StatusCodes.Status204NoContent, $"Nessun Autore trovato per id: {id}");
+                    return NotFound();
 
-                return StatusCode(StatusCodes.Status200OK, author);
+                return Ok(author);
             }
             catch (WebException ex)
             {
@@ -65,13 +65,10 @@ namespace API_EFCoreDbFirst.Controllers
                     return BadRequest();
 
                await _db.AddAsync(author);
-
-                return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
-
+                return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
                 // oppure con CreatedAtRoute...
                 //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
-
             }
             catch (WebException)
             {
@@ -86,8 +83,7 @@ namespace API_EFCoreDbFirst.Controllers
             try
             {
                 if (author is null)
-                    return StatusCode(StatusCodes.Status500InternalServerError, "L'autore non puo essere aggiornato.");
-
+                    return NotFound();
                 var authorToUpdate = _db.GetAsync(id);
 
                 if (!ModelState.IsValid)
