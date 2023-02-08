@@ -11,11 +11,10 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IDataRepository<Author, AuthorDTO> _db;
+        private readonly IDataRepository<Author> _db;
         
         // DI
-        public AuthorsController(IDataRepository<Author, 
-                                 AuthorDTO> repository) 
+        public AuthorsController(IDataRepository<Author> repository) 
             => _db = repository;
 
 

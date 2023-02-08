@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class PublisherDataManager : IDataRepository<Publisher, PublisherDTO>
+    public class PublisherDataManager : IDataRepository<Publisher>
     {
         readonly BookStoreContext _db;
 
@@ -34,7 +34,7 @@ namespace API_EFCoreDbFirst.DataManager
         {
             return await _db.Publishers
               .Include(a => a.Books)
-              .SingleAsync(b => b.Id == id);
+              .SingleOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<List<Publisher>> GetAll()

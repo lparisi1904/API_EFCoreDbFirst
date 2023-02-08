@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class BookDataManager: IDataRepository<Book, BookDTO>
+    public class BookDataManager: IDataRepository<Book>
     {
         readonly BookStoreContext _db;
 

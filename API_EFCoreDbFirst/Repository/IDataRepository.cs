@@ -2,7 +2,7 @@
 
 namespace API_EFCoreDbFirst.Repository
 {
-    public interface IDataRepository<TEntity, TDto>
+    public interface IDataRepository<TEntity>
     {
         /// <summary>
         /// add a new interface named IDataRepository 
@@ -12,7 +12,7 @@ namespace API_EFCoreDbFirst.Repository
         Task<List<TEntity>> GetAll();
         //IEnumerable<TEntity> GetAll();
         Task<TEntity> GetAsync(long id);
-        Task<TDto> GetDto(long id);
+       // Task<TDto> GetDto(long id);
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entityToUpdate, TEntity entity);
         Task DeleteAsync(TEntity entity);
