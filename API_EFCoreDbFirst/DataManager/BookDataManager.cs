@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class BookDataManager: IDataRepository<Book, BookRec>
+    public class BookDataManager: IDataRepository<Book, BookDTO>
     {
         readonly BookStoreContext _db;
 
@@ -59,21 +59,21 @@ namespace API_EFCoreDbFirst.DataManager
             throw new NotImplementedException();
         }
 
-        private static BookRec BookToDTO(Book book) =>
+        private static BookDTO BookToDTO(Book book) =>
         new()
         {
             Id= book.Id,
             Title= book.Title,
-            Publisher = new PublisherRec ()
+            Publisher = new PublisherDTO ()
             {
                 Id= book.Id,
                 Name = book.Title
             },
-            Authors = (ICollection<AuthorRec >)book.BookAuthors.Select(x => x.Author)
+            Authors = (ICollection<AuthorDTO >)book.BookAuthors.Select(x => x.Author)
         };
 
 
-        public Task<BookRec> GetDto(long id)
+        public Task<BookDTO> GetDto(long id)
         {
             throw new NotImplementedException();
         }

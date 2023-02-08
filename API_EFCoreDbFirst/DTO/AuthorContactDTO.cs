@@ -1,6 +1,6 @@
 ﻿namespace API_EFCoreDbFirst.Dto
 {
-    public record AuthorContactRec 
+    public record AuthorContactDTO 
     {
         public long AuthorId { get; set; }
 

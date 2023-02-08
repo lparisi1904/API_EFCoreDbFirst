@@ -11,10 +11,10 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IDataRepository<Book, BookRec> _db;
+        private readonly IDataRepository<Book, BookDTO> _db;
 
         // DI...
-        public BooksController(IDataRepository<Book, BookRec> dataRepository)
+        public BooksController(IDataRepository<Book, BookDTO> dataRepository)
             => _db = dataRepository;
 
         // GET: api/Books/5

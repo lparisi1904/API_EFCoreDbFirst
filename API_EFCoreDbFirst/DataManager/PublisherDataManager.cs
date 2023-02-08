@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class PublisherDataManager : IDataRepository<Publisher, PublisherRec>
+    public class PublisherDataManager : IDataRepository<Publisher, PublisherDTO>
     {
         readonly BookStoreContext _db;
 
@@ -44,7 +44,7 @@ namespace API_EFCoreDbFirst.DataManager
                 .ToListAsync();
         }
 
-        public Task<PublisherRec> GetDto(long id)
+        public Task<PublisherDTO> GetDto(long id)
         {
             throw new NotImplementedException();
         }

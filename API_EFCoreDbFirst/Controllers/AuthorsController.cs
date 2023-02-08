@@ -11,17 +11,16 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IDataRepository<Author, AuthorRec> _db;
+        private readonly IDataRepository<Author, AuthorDTO> _db;
         
         // DI
         public AuthorsController(IDataRepository<Author, 
-                                 AuthorRec> repository) 
+                                 AuthorDTO> repository) 
             => _db = repository;
 
 
-
         [HttpGet]
-        public IActionResult Get()
+        public ActionResult GetAuthors()
         {
             try
             {
@@ -74,7 +73,7 @@ namespace API_EFCoreDbFirst.Controllers
                 //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
 
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"{author.Name} could not be added.");
             }

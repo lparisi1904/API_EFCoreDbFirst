@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class AuthorDataManager : IDataRepository<Author, AuthorRec >
+    public class AuthorDataManager : IDataRepository<Author, AuthorDTO >
     {
         readonly BookStoreContext _db;
 
@@ -38,25 +38,24 @@ namespace API_EFCoreDbFirst.DataManager
                .FirstOrDefaultAsync(b => b.Id == id);
 
             return await author;
+
         }
 
         public async Task<List<Author>> GetAll()
         {
             return await _db.Authors
-                .Include(a=> a.AuthorContact)
+                .Include(a => a.AuthorContact)
                 .ToListAsync();
         }
 
-        public async Task<AuthorRec> GetDto(long id)
+        public async Task<AuthorDTO> GetDto(long id)
         {
-            _db.ChangeTracker.LazyLoadingEnabled = true;
-
             var context = new BookStoreContext();
 
             var author = context.Authors
                 .SingleOrDefaultAsync(b => b.Id == id);
 
-            return AuthorMapperRec.MapToRecord(await author);
+            return AuthorMapperDTO.MapAuthorToDTO(await author);
         }
 
         public Task Update(Author entity)

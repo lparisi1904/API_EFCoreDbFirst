@@ -11,9 +11,9 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly IDataRepository<Publisher, PublisherRec> _db;
+        private readonly IDataRepository<Publisher, PublisherDTO> _db;
 
-        public PublishersController(IDataRepository<Publisher, PublisherRec> repository)  
+        public PublishersController(IDataRepository<Publisher, PublisherDTO> repository)  
             => _db = repository;
 
         [HttpDelete("{id}")]

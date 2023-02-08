@@ -3,16 +3,16 @@ using API_EFCoreDbFirst.Dto;
 
 namespace API_EFCoreDbFirst.Dto
 {
-    public record AuthorMapperRec 
+    public record AuthorMapperDTO 
     {
-        public static AuthorRec  MapToRecord(Author author)
+        public static AuthorDTO MapAuthorToDTO(Author author)
         {
-            return new AuthorRec ()
+            return new AuthorDTO ()
             {
                 Id = author.Id,
                 Name = author.Name,
 
-                AuthorContact = new AuthorContactRec()
+                AuthorContact = new AuthorContactDTO()
                 {
                     AuthorId = author.Id,
                     Address = author.AuthorContact.Address,
