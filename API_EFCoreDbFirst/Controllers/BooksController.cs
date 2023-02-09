@@ -27,11 +27,12 @@ namespace API_EFCoreDbFirst.Controllers
 
                 if (book == null)
                     return NotFound();
+
                 return Ok(book);
             }
             catch (WebException ex)
             {
-                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
             }
         }
 
@@ -42,48 +43,48 @@ namespace API_EFCoreDbFirst.Controllers
             {
                 await _db.Add(book);
 
-                return CreatedAtAction("GetBook", new { id = book.Id }, book);
+                return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
             }
-            catch (WebException)
+            catch (WebException ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non puo essere aggiunto.");
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
             }
         }
 
         //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateBook(int id, Book book)
+        //public async Task<ActionResult> UpdateBook(Book book)
         //{
         //    try
         //    {
-        //        if (id != book.Id)
-        //            return BadRequest();
+        //        Book dbBook = await _db.Update(book);
 
-        //        await _db.Update(book, book);
+        //        if (dbAuthor == null)
+        //            return BadRequest();
 
         //        return NoContent();
         //    }
-        //    catch (WebException)
+        //    catch (WebException ex)
         //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non  puo essere aggiornato");
+        //        throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
         //    }
         //}
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteBook(int id, Book book)
-        //{
-        //    try
-        //    {
-        //         _db.Get(id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(long id) 
+        {
+            try {
+                var dbBook = _db.Get(id);
 
-        //        //(bool status, string message) = await _db.Delete(book);
-        //        await _db.Delete(book);
+                (bool status, string message) = await _db.Delete(id);
 
-        //        return StatusCode(StatusCodes.Status200OK, book);
-        //    }
-        //    catch (WebException)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, $"{book.Title} non  puo essere aggiornato");
-        //    }
-        //}
+                if (status == false)
+                    return BadRequest(message);
+
+                return NoContent();
+            }
+            catch (WebException ex) {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
+            }
+        }
     }
 }

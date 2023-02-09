@@ -32,7 +32,7 @@ namespace API_EFCoreDbFirst.Controllers
             }
             catch (WebException ex)
             {
-              throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+              throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
             }
         }
 
@@ -64,9 +64,10 @@ namespace API_EFCoreDbFirst.Controllers
                     return BadRequest();
 
                await _db.Add(author);
+
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
-                return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
                 // oppure con CreatedAtRoute...
+                return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
                 //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
             }
             catch (WebException)
@@ -83,6 +84,7 @@ namespace API_EFCoreDbFirst.Controllers
             {
                 if (author is null)
                     return NotFound();
+
                 var authorToUpdate = _db.Get(id);
 
                 if (!ModelState.IsValid)
@@ -91,11 +93,10 @@ namespace API_EFCoreDbFirst.Controllers
                 await _db.Update(author);
 
                 return NoContent();
-
             }
             catch (WebException ex)
             {
-                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
             }
         }
     }
