@@ -11,10 +11,10 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IDataRepository<Book> _db;
+        private readonly IService<Book> _db;
 
         // DI...
-        public BooksController(IDataRepository<Book> dataRepository)
+        public BooksController(IService<Book> dataRepository)
             => _db = dataRepository;
 
         // GET: api/Books/5
@@ -22,8 +22,8 @@ namespace API_EFCoreDbFirst.Controllers
         public async Task<ActionResult> GetBook(int id)
         {
             try
-            {
-                var book = await _db.GetAsync(id);
+            {   
+                var book = await _db.Get(id);
 
                 if (book == null)
                     return NotFound();
@@ -40,7 +40,7 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                await _db.AddAsync(book);
+                await _db.Add(book);
 
                 return CreatedAtAction("GetBook", new { id = book.Id }, book);
             }
@@ -58,7 +58,7 @@ namespace API_EFCoreDbFirst.Controllers
         //        if (id != book.Id)
         //            return BadRequest();
 
-        //        await _db.UpdateAsync(book, book);
+        //        await _db.Update(book, book);
 
         //        return NoContent();
         //    }
@@ -73,10 +73,10 @@ namespace API_EFCoreDbFirst.Controllers
         //{
         //    try
         //    {
-        //         _db.GetAsync(id);
+        //         _db.Get(id);
 
-        //        //(bool status, string message) = await _db.DeleteAsync(book);
-        //        await _db.DeleteAsync(book);
+        //        //(bool status, string message) = await _db.Delete(book);
+        //        await _db.Delete(book);
 
         //        return StatusCode(StatusCodes.Status200OK, book);
         //    }

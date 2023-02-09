@@ -6,10 +6,9 @@ namespace API_EFCoreDbFirst.Models;
 
 public partial class Book
 {
-
     public Book()
     {
-        BookAuthors = new List<BookAuthors>();
+        BookAuthors = new HashSet<BookAuthors>();
     }
 
     [Key]
@@ -25,5 +24,5 @@ public partial class Book
 
     public virtual Publisher Publisher { get; set; } = null!;
 
-    public virtual ICollection<BookAuthors> BookAuthors { get; } = new List<BookAuthors>();
+    public virtual ICollection<BookAuthors> BookAuthors { get; set; } 
 }

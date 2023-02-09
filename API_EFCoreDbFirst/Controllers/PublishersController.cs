@@ -11,9 +11,9 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly IDataRepository<Publisher> _db;
+        private readonly IService<Publisher> _db;
 
-        public PublishersController(IDataRepository<Publisher> repository)  
+        public PublishersController(IService<Publisher> repository)  
             => _db = repository;
 
         [HttpDelete("{id}")]
@@ -21,12 +21,12 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                var publisher = _db.GetAsync(id);
+                var publisher = _db.Get(id);
 
                 if (publisher == null)
                     return NotFound("L'editore non può essere trovato..");
 
-                await _db.DeleteAsync(publisher);
+                await _db.Delete(publisher.Id);
 
                 return NoContent();
             }

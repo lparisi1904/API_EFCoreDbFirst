@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class PublisherDataManager : IDataRepository<Publisher>
+    public class PublisherDataManager : IService<Publisher>
     {
         readonly BookStoreContext _db;
 
@@ -13,55 +13,77 @@ namespace API_EFCoreDbFirst.DataManager
             _db= context;
         }
 
-        public async Task AddAsync(Publisher entity)
-        {
-            _db.Add(entity);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Publisher entity)
-        {
-            _db.Remove(entity);
-            await _db.SaveChangesAsync();
-        }
-
-        public Task DeleteAsync(Task<Publisher> publisher)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Publisher> GetAsync(long id)
-        {
-            return await _db.Publishers
-              .Include(a => a.Books)
-              .SingleOrDefaultAsync(b => b.Id == id);
-        }
-
-        public async Task<List<Publisher>> GetAll()
+        public async Task<IEnumerable<Publisher>> GetAll()
         {
             return await _db.Publishers
                 .Include(a => a.Books)
                 .ToListAsync();
         }
 
-        public Task<PublisherDTO> GetDto(long id)
+        public async Task<Publisher?> Get(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _db.Publishers
+                    .Include(b => b.Books)
+                    .SingleOrDefaultAsync(p => p.Id == id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public Task Update(Publisher entity)
+        public async Task<Publisher?> Add(Publisher entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _db.Publishers.AddAsync(entity);
+                await _db.SaveChangesAsync();
+
+                return await _db.Publishers.FindAsync(entity.Id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public async Task<Publisher?> Update(Publisher entity)
+        {
+            try
+            {
+                _db.Entry(entity).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+
+                return entity;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public Task UpdateAsync(Publisher entityToUpdate, Publisher entity)
+        public async Task<(bool, string)> Delete(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dbPublisher = await _db.Publishers.FindAsync(id);
+
+                if (dbPublisher == null)
+                {
+                    return (false, "Editore non trovato");
+                }
+
+                _db.Publishers.Remove(dbPublisher);
+                await _db.SaveChangesAsync();
+
+                return (true, "Editore cancellato.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Si è verificato un errore. -> {ex.Message}");
+            }
         }
 
-        public Task UpdateAsync(Task<Author> authorToUpdate, Author author)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

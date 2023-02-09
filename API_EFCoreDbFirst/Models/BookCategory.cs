@@ -6,6 +6,11 @@ namespace API_EFCoreDbFirst.Models;
 
 public partial class BookCategory
 {
+    public BookCategory()
+    {
+        Book= new HashSet<Book>();
+    }
+
     [Key]
     public long Id { get; set; }
 
@@ -13,5 +18,5 @@ public partial class BookCategory
 
     //public virtual ICollection<Book> Books { get; } = new List<Book>();
 
-    public virtual ICollection<Book>? Books { get; set; }
+    public virtual ICollection<Book> Book { get; set; }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class BookDataManager: IDataRepository<Book>
+    public class BookDataManager: IService<Book>
     {
         readonly BookStoreContext _db;
 
@@ -15,27 +15,10 @@ namespace API_EFCoreDbFirst.DataManager
             _db = storeContext;
         }
 
-        public Task AddAsync(Book entity)
+        public async Task<Book?> Get(long id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(Book entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(Task<Publisher> publisher)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Book?> GetAsync(long id)
-        {
-           // _db.ChangeTracker.LazyLoadingEnabled = false;
-
             var book = _db.Books
-                .SingleOrDefault(x=> x.Id == id);
+                .SingleOrDefault(x => x.Id == id);
 
             if (book == null)
                 return null;
@@ -54,43 +37,70 @@ namespace API_EFCoreDbFirst.DataManager
             return book;
         }
 
-        public Task<List<Book>> GetAll()
+        public async Task<IEnumerable<Book>?> GetAll()
         {
-            throw new NotImplementedException();
-        }
-
-        private static BookDTO BookToDTO(Book book) =>
-        new()
-        {
-            Id= book.Id,
-            Title= book.Title,
-            Publisher = new PublisherDTO ()
+            try 
+            { 
+                return await _db.Books
+                    .ToListAsync();
+            }
+            catch (Exception)
             {
-                Id= book.Id,
-                Name = book.Title
-            },
-            Authors = (ICollection<AuthorDTO >)book.BookAuthors.Select(x => x.Author)
-        };
-
-
-        public Task<BookDTO> GetDto(long id)
-        {
-            throw new NotImplementedException();
+                return null;
+            }
         }
 
-        public Task Update(Book entity)
+        public async Task<Book> Add(Book entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _db.Books.AddAsync(entity);
+                await _db.SaveChangesAsync();
+
+                return await _db.Books.FindAsync(entity.Id); 
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public Task UpdateAsync(Book entityToUpdate, Book entity)
+        public async Task<Book?> Update(Book entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _db.Entry(entity).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+
+                return entity;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public Task UpdateAsync(Task<Author> authorToUpdate, Author author)
+        public async Task<(bool, string)> Delete(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var book = await _db.Books.FindAsync(id);
+
+                if (book == null)
+                    return (false, "Il libro non può essere trovato.");
+
+                _db.Books.Remove(book);
+
+                _db.Entry(book).State = EntityState.Deleted;
+                await _db.SaveChangesAsync();
+
+                return (true, $"Il libro {book.Title} è stato cancellato.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Si è verificato un errore. -> {ex.Message}");
+            }
         }
+
     }
 }

@@ -11,10 +11,10 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IDataRepository<Author> _db;
+        private readonly IService<Author> _db;
         
         // DI
-        public AuthorsController(IDataRepository<Author> repository) 
+        public AuthorsController(IService<Author> repository) 
             => _db = repository;
 
 
@@ -41,7 +41,7 @@ namespace API_EFCoreDbFirst.Controllers
         {
             try
             {
-                var author = _db.GetAsync(id);
+                var author = _db.Get(id);
 
                 if (author == null)
                     return NotFound();
@@ -63,7 +63,7 @@ namespace API_EFCoreDbFirst.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-               await _db.AddAsync(author);
+               await _db.Add(author);
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
                 return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
                 // oppure con CreatedAtRoute...
@@ -83,12 +83,12 @@ namespace API_EFCoreDbFirst.Controllers
             {
                 if (author is null)
                     return NotFound();
-                var authorToUpdate = _db.GetAsync(id);
+                var authorToUpdate = _db.Get(id);
 
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                await _db.UpdateAsync(authorToUpdate, author);
+                await _db.Update(author);
 
                 return NoContent();
 

@@ -3,19 +3,23 @@ using API_EFCoreDbFirst.Dto;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 #region builder
 
 var builder = WebApplication.CreateBuilder(args);
 
-// AddAsync services to the container.
-var connectionString = builder.Configuration.GetConnectionString("ConnStr");
-builder.Services.AddDbContext<BookStoreContext>(options => options.UseSqlServer(connectionString));
+// Add services to the container.
+//var connectionString = builder.Configuration.GetConnectionString("ConnStr");
+//builder.Services.AddDbContext<BookStoreContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IDataRepository<Author>,AuthorDataManager>();
-builder.Services.AddScoped<IDataRepository<Book>,BookDataManager>();
-builder.Services.AddScoped<IDataRepository<Publisher>,PublisherDataManager>();
+builder.Services.AddDbContext<BookStoreContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
+
+builder.Services.AddScoped<IService<Author>,AuthorDataManager>();
+builder.Services.AddScoped<IService<Book>,BookDataManager>();
+builder.Services.AddScoped<IService<Publisher>,PublisherDataManager>();
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(

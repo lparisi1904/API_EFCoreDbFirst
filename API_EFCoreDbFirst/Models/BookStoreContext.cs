@@ -70,7 +70,7 @@ public partial class BookStoreContext : DbContext
             entity.Property(e => e.PublisherId).HasColumnName("Publisher_Id");
             entity.Property(e => e.Title).HasMaxLength(100);
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Books)
+            entity.HasOne(d => d.Category).WithMany(p => p.Book)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Book__CATEGORY_I__403A8C7D");
