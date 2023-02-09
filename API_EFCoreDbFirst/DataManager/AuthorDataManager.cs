@@ -18,8 +18,10 @@ namespace API_EFCoreDbFirst.DataManager
         {
             try
             {
-                return await _db.Authors
-                   .SingleOrDefaultAsync(b => b.Id == id);
+                var author = _db.Authors
+                    .SingleOrDefault(b => b.Id == id);
+
+                return author;
             }
             catch (Exception)
             {
@@ -33,7 +35,6 @@ namespace API_EFCoreDbFirst.DataManager
             {
                 return await _db.Authors
                     .Include(a => a.AuthorContact)
-                    .Include(b => b.BookAuthors)
                 .ToListAsync();
 
             }

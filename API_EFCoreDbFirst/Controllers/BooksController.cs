@@ -25,7 +25,7 @@ namespace API_EFCoreDbFirst.Controllers
             {   
                 var book = await _db.Get(id);
 
-                if (book == null)
+                if (book is null)
                     return NotFound();
 
                 return Ok(book);
