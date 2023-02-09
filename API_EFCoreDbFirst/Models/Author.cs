@@ -15,6 +15,7 @@ public partial class Author
     public long Id { get; set; }
 
     public string Name { get; set; } = null!;
+    public string Na22me { get; set; } = null!;
 
     public virtual AuthorContact? AuthorContact { get; set; }
 
