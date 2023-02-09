@@ -69,23 +69,23 @@ namespace API_EFCoreDbFirst.Controllers
             }
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult> UpdateBook(Book book)
-        //{
-        //    try
-        //    {
-        //        Book dbBook = await _db.Update(book);
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateBook(Book book)
+        {
+            try
+            {
+                Book dbBook = await _db.Update(book);
 
-        //        if (dbAuthor == null)
-        //            return BadRequest();
+                if (book == null)
+                    return BadRequest();
 
-        //        return NoContent();
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
-        //    }
-        //}
+                return NoContent();
+            }
+            catch (WebException ex)
+            {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
+            }
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(long id) 
