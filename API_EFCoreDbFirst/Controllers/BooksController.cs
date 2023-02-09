@@ -36,6 +36,24 @@ namespace API_EFCoreDbFirst.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult GetBooks()
+        {
+            try
+            {
+                var books = _db.GetAll();
+
+                if (books == null)
+                    return NotFound("Libri non presenti in archivio.");
+
+                return Ok(books);
+            }
+            catch (WebException ex)
+            {
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<Book>> AddBook(Book book)
         {

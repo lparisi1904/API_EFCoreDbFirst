@@ -18,23 +18,12 @@ namespace API_EFCoreDbFirst.DataManager
         public async Task<Book?> Get(long id)
         {
             var dbBook = _db.Books
-                .Include(b=> b.BookAuthors)
+                .Include(b => b.BookAuthors)
+                .Include(p => p.Publisher)
                 .SingleOrDefault(book=> book.Id == id);
 
             if (dbBook == null)
                 return null;
-
-            // CARICAMENTO ESPLICITO..
-            //È possibile caricare in modo esplicito una proprietà di navigazione tramite l'API ..
-            // viene utilizzato per ottenere i dettagli di un file (Book..)
-
-            //_db.Entry(dbBook)
-            //    .Collection(b => b.BookAuthors)
-            //    .Load();
-
-            //_db.Entry(dbBook)
-            //    .Reference(r => r.Publisher)
-            //    .Load();
 
             return dbBook;
         }
@@ -42,9 +31,11 @@ namespace API_EFCoreDbFirst.DataManager
         public async Task<IEnumerable<Book>?> GetAll()
         {
             try 
-            { 
-                return await _db.Books
-                    .ToListAsync();
+            {
+                return _db.Books
+                    .Include(b=> b.BookAuthors)
+                    .Include(p=> p.Publisher)
+                    .ToList();
             }
             catch (Exception)
             {

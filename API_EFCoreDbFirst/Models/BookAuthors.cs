@@ -6,6 +6,7 @@ namespace API_EFCoreDbFirst.Models
     {
         [Key]
         public long BookId { get; set; }
+        [Key]
         public long AuthorId { get; set; }
 
         public virtual Author Author { get; set; }

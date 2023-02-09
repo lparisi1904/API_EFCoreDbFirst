@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.Models;
 
@@ -13,6 +11,7 @@ public partial class BookStoreContext : DbContext
     public BookStoreContext(DbContextOptions<BookStoreContext> options)
         : base(options)
     {
+        ChangeTracker.LazyLoadingEnabled = false;
     }
 
     public virtual DbSet<Author> Authors { get; set; }
@@ -28,8 +27,9 @@ public partial class BookStoreContext : DbContext
     public virtual DbSet<Publisher> Publishers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=BookStore;Trusted_Connection=true;Encrypt=false;");
+                       => optionsBuilder
+                            .UseSqlServer("Server=.\\SQLExpress;Database=BookStore;Trusted_Connection=true;Encrypt=false;");
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -102,6 +102,10 @@ public partial class BookStoreContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("NAME");
         });
+
+
+    modelBuilder.Entity<BookAuthors>()
+       .HasKey(a => new { a.BookId, a.AuthorId});
 
         OnModelCreatingPartial(modelBuilder);
     }

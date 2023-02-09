@@ -16,7 +16,7 @@ namespace API_EFCoreDbFirst.DataManager
         public async Task<IEnumerable<Publisher>> GetAll()
         {
             return await _db.Publishers
-                .Include(a => a.Books)
+               // .Include(a => a.Books)
                 .ToListAsync();
         }
 
@@ -25,7 +25,7 @@ namespace API_EFCoreDbFirst.DataManager
             try
             {
                 return await _db.Publishers
-                    .Include(b => b.Books)
+                 //   .Include(b => b.Books)
                     .SingleOrDefaultAsync(p => p.Id == id);
             }
             catch (Exception)

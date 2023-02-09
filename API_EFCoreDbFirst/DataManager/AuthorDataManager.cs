@@ -14,7 +14,7 @@ namespace API_EFCoreDbFirst.DataManager
             _db = storeContext;
         }
 
-        public async Task<Author> Get(long id)
+        public async Task<Author?> Get(long id)
         {
             try
             {
@@ -33,10 +33,9 @@ namespace API_EFCoreDbFirst.DataManager
         {
             try
             {
-                return await _db.Authors
-                    .Include(a => a.AuthorContact)
-                .ToListAsync();
-
+                return  _db.Authors
+                        .Include(c => c.AuthorContact)
+                        .ToList();
             }
             catch (Exception)
             {
