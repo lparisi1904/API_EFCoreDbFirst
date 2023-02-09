@@ -66,7 +66,6 @@ namespace API_EFCoreDbFirst.Controllers
                 await _db.Add(author);
 
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
-                // oppure con CreatedAtRoute...
                 return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
                 //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
             }
