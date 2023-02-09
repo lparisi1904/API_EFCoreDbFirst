@@ -63,16 +63,16 @@ namespace API_EFCoreDbFirst.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-               await _db.Add(author);
+                await _db.Add(author);
 
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
                 // oppure con CreatedAtRoute...
                 return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
                 //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
             }
-            catch (WebException)
+            catch (WebException ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"{author.Name} could not be added.");
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
             }
         }
 
