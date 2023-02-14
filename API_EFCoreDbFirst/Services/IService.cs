@@ -1,4 +1,5 @@
-﻿using API_EFCoreDbFirst.Models;
+﻿//using API_EFCoreDbFirst.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API_EFCoreDbFirst.Repository
 {
@@ -14,7 +15,8 @@ namespace API_EFCoreDbFirst.Repository
         Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity> Get(long id);
         Task<TEntity> Add(TEntity entity);
-        Task<TEntity> Update(TEntity entity);
+        //Task<TEntity> Update(TEntity entity);
+        Task<TEntity> Update(long id, TEntity entity);
         Task<(bool, string)> Delete(long id);
     }
 }

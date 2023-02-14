@@ -70,11 +70,11 @@ namespace API_EFCoreDbFirst.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateBook(Book book)
+        public async Task<ActionResult> UpdateBook(long id, [FromBody] Book book)
         {
             try
             {
-                Book dbBook = await _db.Update(book);
+                Book dbBook = await _db.Update(id, book);
 
                 if (book == null)
                     return BadRequest();

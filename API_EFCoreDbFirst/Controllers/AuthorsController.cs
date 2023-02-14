@@ -4,6 +4,7 @@ using API_EFCoreDbFirst.Repository;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Dto;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.Controllers
 {
@@ -12,9 +13,9 @@ namespace API_EFCoreDbFirst.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly IService<Author> _db;
-        
+
         // DI
-        public AuthorsController(IService<Author> repository) 
+        public AuthorsController(IService<Author> repository)
             => _db = repository;
 
 
@@ -32,7 +33,7 @@ namespace API_EFCoreDbFirst.Controllers
             }
             catch (WebException ex)
             {
-              throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
+                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
             }
         }
 
@@ -75,6 +76,8 @@ namespace API_EFCoreDbFirst.Controllers
             }
         }
 
+
+
         // PUT: api/Authors/1
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAuthor(int id, [FromBody] Author author)
@@ -84,12 +87,18 @@ namespace API_EFCoreDbFirst.Controllers
                 if (author is null)
                     return NotFound();
 
+                if (id != author.Id)
+                    return BadRequest();
+
                 var authorToUpdate = _db.Get(id);
+
+                if (authorToUpdate == null)
+                    return NotFound();
 
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                await _db.Update(author);
+                await _db.Update(id, author);
 
                 return NoContent();
             }
@@ -100,3 +109,4 @@ namespace API_EFCoreDbFirst.Controllers
         }
     }
 }
+

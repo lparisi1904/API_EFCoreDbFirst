@@ -1,6 +1,7 @@
 ﻿using API_EFCoreDbFirst.Dto;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
@@ -16,8 +17,7 @@ namespace API_EFCoreDbFirst.DataManager
         public async Task<IEnumerable<Publisher>> GetAll()
         {
             return await _db.Publishers
-               // .Include(a => a.Books)
-                .ToListAsync();
+                    .ToListAsync();
         }
 
         public async Task<Publisher?> Get(long id)
@@ -25,7 +25,6 @@ namespace API_EFCoreDbFirst.DataManager
             try
             {
                 return await _db.Publishers
-                 //   .Include(b => b.Books)
                     .SingleOrDefaultAsync(p => p.Id == id);
             }
             catch (Exception)
@@ -48,14 +47,15 @@ namespace API_EFCoreDbFirst.DataManager
                 return null;
             }
         }
-        public async Task<Publisher?> Update(Publisher entity)
+        public async Task<Publisher?> Update(long id, [FromBody] Publisher entityToUpdate)
         {
+
             try
             {
-                _db.Entry(entity).State = EntityState.Modified;
+                _db.Entry(entityToUpdate).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
 
-                return entity;
+                return entityToUpdate;
             }
             catch (Exception)
             {

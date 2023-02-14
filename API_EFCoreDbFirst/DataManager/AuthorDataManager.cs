@@ -1,6 +1,8 @@
 ﻿using API_EFCoreDbFirst.Dto;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
@@ -19,6 +21,7 @@ namespace API_EFCoreDbFirst.DataManager
             try
             {
                 var author = _db.Authors
+                    .Include(c => c.AuthorContact)
                     .SingleOrDefault(b => b.Id == id);
 
                 return author;
@@ -34,7 +37,7 @@ namespace API_EFCoreDbFirst.DataManager
             try
             {
                 return  _db.Authors
-                        .Include(c => c.AuthorContact)
+                        //.Include(c => c.AuthorContact)
                         .ToList();
             }
             catch (Exception)
@@ -55,9 +58,23 @@ namespace API_EFCoreDbFirst.DataManager
                 return null;
             }
         }
-        public async Task<Author?> Update(Author entity)
+        public async Task<Author?> Update(long id, Author entityToUpdate)
         {
+            Author entity = _db.Authors
+              //.Include(a => a.BookAuthors)
+              .Include(a => a.AuthorContact)
+              .Single(b => b.Id == id);
+
+            if (entity == null || entity.Id != id)
+                return null; 
+
             try {
+
+                entity.Name = entityToUpdate.Name;
+                entity.AuthorContact.Address = entityToUpdate.AuthorContact.Address;
+                entity.AuthorContact.ContactNumber = entityToUpdate.AuthorContact.ContactNumber;
+
+
                 _db.Entry(entity).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
 
@@ -90,6 +107,5 @@ namespace API_EFCoreDbFirst.DataManager
                 return (false, $"Si è verificato un errore. ->  {ex.Message}");
             }
         }
-
     }
 }

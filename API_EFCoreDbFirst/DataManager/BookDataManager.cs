@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using API_EFCoreDbFirst.Dto;
 using API_EFCoreDbFirst.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API_EFCoreDbFirst.DataManager
 {
@@ -18,7 +19,7 @@ namespace API_EFCoreDbFirst.DataManager
         public async Task<Book?> Get(long id)
         {
             var dbBook = _db.Books
-                .Include(b => b.BookAuthors)
+                //.Include(b => b.BookAuthors)
                 .Include(p => p.Publisher)
                 .SingleOrDefault(book=> book.Id == id);
 
@@ -33,7 +34,7 @@ namespace API_EFCoreDbFirst.DataManager
             try 
             {
                 return _db.Books
-                    .Include(b=> b.BookAuthors)
+                    //.Include(b=> b.BookAuthors)
                     .Include(p=> p.Publisher)
                     .ToList();
             }
@@ -56,16 +57,16 @@ namespace API_EFCoreDbFirst.DataManager
             {
                 return null;
             }
-        }
+        } 
 
-        public async Task<Book?> Update(Book entity)
+        public async Task<Book?> Update(long id, [FromBody] Book entityToUpdate)
         {
             try
             {
-                _db.Entry(entity).State = EntityState.Modified;
+                _db.Entry(entityToUpdate).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
 
-                return entity;
+                return entityToUpdate;
             }
             catch (Exception)
             {

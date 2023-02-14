@@ -12,16 +12,16 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//var connectionString = builder.Configuration.GetConnectionString("ConnStr");
-//builder.Services.AddDbContext<BookStoreContext>(options => options.UseSqlServer(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("ConnStr");
+builder.Services.AddDbContext<BookStoreContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddDbContext<BookStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
 
 // Register Library Service to use it with Dependency Injection in Controllers
-builder.Services.AddScoped<IService<Author>,AuthorDataManager>();
-builder.Services.AddScoped<IService<Book>,BookDataManager>();
-builder.Services.AddScoped<IService<Publisher>,PublisherDataManager>();
+builder.Services.AddScoped<IService<Author>, AuthorDataManager>();
+builder.Services.AddScoped<IService<Book>, BookDataManager>();
+builder.Services.AddScoped<IService<Publisher>, PublisherDataManager>();
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(

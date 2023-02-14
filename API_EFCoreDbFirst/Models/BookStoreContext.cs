@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.Models;
 
@@ -11,7 +13,6 @@ public partial class BookStoreContext : DbContext
     public BookStoreContext(DbContextOptions<BookStoreContext> options)
         : base(options)
     {
-        ChangeTracker.LazyLoadingEnabled = false;
     }
 
     public virtual DbSet<Author> Authors { get; set; }
@@ -22,14 +23,11 @@ public partial class BookStoreContext : DbContext
 
     public virtual DbSet<BookCategory> BookCategories { get; set; }
 
-    public virtual DbSet<BookAuthors> BookAuthors { get; set; }
-
     public virtual DbSet<Publisher> Publishers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-                       => optionsBuilder
-                            .UseSqlServer("Server=.\\SQLExpress;Database=BookStore;Trusted_Connection=true;Encrypt=false;");
-
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=BookStore;Trusted_Connection=true;Encrypt=false;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,7 +68,7 @@ public partial class BookStoreContext : DbContext
             entity.Property(e => e.PublisherId).HasColumnName("Publisher_Id");
             entity.Property(e => e.Title).HasMaxLength(100);
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Book)
+            entity.HasOne(d => d.Category).WithMany(p => p.Books)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Book__CATEGORY_I__403A8C7D");
@@ -79,6 +77,22 @@ public partial class BookStoreContext : DbContext
                 .HasForeignKey(d => d.PublisherId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Book__PUBLISHER___412EB0B6");
+
+            entity.HasMany(d => d.Authors).WithMany(p => p.Books)
+                .UsingEntity<Dictionary<string, object>>(
+                    "BookAuthor",
+                    r => r.HasOne<Author>().WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK__BookAutho__Autho__44FF419A"),
+                    l => l.HasOne<Book>().WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK__BookAutho__BookI__440B1D61"),
+                    j =>
+                    {
+                        j.HasKey("BookId", "AuthorId").HasName("PK__BookAuth__6AED6DC453D13EB6");
+                    });
         });
 
         modelBuilder.Entity<BookCategory>(entity =>
@@ -102,10 +116,6 @@ public partial class BookStoreContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("NAME");
         });
-
-
-    modelBuilder.Entity<BookAuthors>()
-       .HasKey(a => new { a.BookId, a.AuthorId});
 
         OnModelCreatingPartial(modelBuilder);
     }
