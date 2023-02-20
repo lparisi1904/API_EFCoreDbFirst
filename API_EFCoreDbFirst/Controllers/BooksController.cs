@@ -1,6 +1,7 @@
-﻿using API_EFCoreDbFirst.Dto;
+﻿using API_EFCoreDbFirst.DTOs;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
+using API_EFCoreDbFirst.Utilities.MapToDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,30 +12,46 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IService<Book> _db;
+        private readonly IService<Book, BookDetailDto> _db;
 
-        // DI...
-        public BooksController(IService<Book> dataRepository)
-            => _db = dataRepository;
+        // DI
+        public BooksController(IService<Book, BookDetailDto> repository)
+            => _db = repository;
 
-        // GET: api/Books/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetBook(int id)
+
+        //// GET: api/Books/5
+        //[HttpGet("{id}", Name = "GetBook")]
+        //public async Task<ActionResult> GetById(int id)
+        //{
+        //    try
+        //    {
+        //        var book = await _db.GetById(id);
+
+        //        if (book is null)
+        //            return NotFound();
+
+        //        return Ok(book);
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
+        //    }
+        //}
+
+
+        // GET: api/Authors/5
+        [HttpGet("{id}", Name = "GetBookDto")]
+        public async Task<ActionResult> GetBookDetails(long id)
         {
-            try
-            {   
-                var book = await _db.Get(id);
-
-                if (book is null)
-                    return NotFound();
-
-                return Ok(book);
-            }
-            catch (WebException ex)
+            var author = await _db.GetDetailsDto(id);
+            if (author == null)
             {
-                throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
+                return NotFound("Author not found.");
             }
+
+            return Ok(author);
         }
+
 
         [HttpGet]
         public ActionResult GetBooks()
@@ -61,7 +78,7 @@ namespace API_EFCoreDbFirst.Controllers
             {
                 await _db.Add(book);
 
-                return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+                return CreatedAtAction(nameof(GetBookDetails), new { id = book.Id }, book);
             }
             catch (WebException ex)
             {
@@ -70,7 +87,7 @@ namespace API_EFCoreDbFirst.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateBook(long id, [FromBody] Book book)
+        public async Task<ActionResult> UpdateBook(long id, Book book)
         {
             try
             {
@@ -88,10 +105,11 @@ namespace API_EFCoreDbFirst.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(long id) 
+        public async Task<IActionResult> DeleteBook(long id)
         {
-            try {
-                var dbBook = _db.Get(id);
+            try
+            {
+                var dbBook = _db.GetById(id);
 
                 (bool status, string message) = await _db.Delete(id);
 
@@ -100,7 +118,8 @@ namespace API_EFCoreDbFirst.Controllers
 
                 return NoContent();
             }
-            catch (WebException ex) {
+            catch (WebException ex)
+            {
                 throw new Exception($"Un errore è avvenuto. Tipo di errore: > {ex.Message}");
             }
         }

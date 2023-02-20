@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using API_EFCoreDbFirst.Repository;
 using API_EFCoreDbFirst.Models;
-using API_EFCoreDbFirst.Dto;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using API_EFCoreDbFirst.DTOs;
 
 namespace API_EFCoreDbFirst.Controllers
 {
@@ -12,11 +12,25 @@ namespace API_EFCoreDbFirst.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IService<Author> _db;
+        private readonly IService<Author, AuthorDetailsDto> _db;
 
         // DI
-        public AuthorsController(IService<Author> repository)
+        public AuthorsController(IService<Author, AuthorDetailsDto> repository)
             => _db = repository;
+
+
+        // GET: api/Authors/5
+        [HttpGet("{id}", Name = "GetAuthorDto")]
+        public async Task<ActionResult> GetAuthorDetails(long id)
+        {
+            var author = await _db.GetDetailsDto(id);
+            if (author == null)
+            {
+                return NotFound("Author not found.");
+            }
+
+            return Ok(author);
+        }
 
 
         [HttpGet]
@@ -37,23 +51,23 @@ namespace API_EFCoreDbFirst.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "GetAuthor")]
-        public ActionResult GetAuthor(long id)
-        {
-            try
-            {
-                var author = _db.Get(id);
+        //[HttpGet("{id}", Name = "GetAuthor")]
+        //public ActionResult GetAuthor(long id)
+        //{
+        //    try
+        //    {
+        //        var author = _db.GetById(id);
 
-                if (author == null)
-                    return NotFound();
+        //        if (author == null)
+        //            return NotFound();
 
-                return Ok(author);
-            }
-            catch (WebException ex)
-            {
-                throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
-            }
-        }
+        //        return Ok(author);
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        throw new Exception($"Un errore è avvenuto. Tipo di errore: {ex.Message}");
+        //    }
+        //}
 
         // POST: api/GetBook
         [HttpPost]
@@ -67,7 +81,7 @@ namespace API_EFCoreDbFirst.Controllers
                 await _db.Add(author);
 
                 // dobbiamo restituire 201 (Creato) invece della semplice risposta 200 OK.
-                return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
+                return CreatedAtAction(nameof(GetAuthorDetails), new { id = author.Id }, author);
                 //return CreatedAtRoute("GetAuthor", new { Id = author.Id }, null);
             }
             catch (WebException ex)
@@ -90,7 +104,7 @@ namespace API_EFCoreDbFirst.Controllers
                 if (id != author.Id)
                     return BadRequest();
 
-                var authorToUpdate = _db.Get(id);
+                var authorToUpdate = _db.GetById(id);
 
                 if (authorToUpdate == null)
                     return NotFound();

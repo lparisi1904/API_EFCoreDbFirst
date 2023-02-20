@@ -1,14 +1,15 @@
 ﻿using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using API_EFCoreDbFirst.Dto;
+using API_EFCoreDbFirst.DTOs;
 using API_EFCoreDbFirst.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using API_EFCoreDbFirst.Utilities.MapToDto;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class BookDataManager: IService<Book>
+    public class BookDataManager: IService<Book, BookDetailDto>
     {
         readonly BookStoreContext _db;
 
@@ -16,12 +17,57 @@ namespace API_EFCoreDbFirst.DataManager
             _db = storeContext;
         }
 
-        public async Task<Book?> Get(long id)
+        //public async Task<Book?> GetById(long id)
+        //{
+        //    var dbBook = _db.Books vnb
+        //        //.Include(a => a.Authors)
+        //        .Include(c=> c.Category)
+        //        .Include(p => p.Publisher)
+        //        .Include(p => p.Authors)
+
+        //        .SingleOrDefault(book=> book.Id == id);
+
+        //    if (dbBook == null)
+        //        return null;
+
+        //    return dbBook;
+        //}
+
+        //public async Task<Book?> GetById(long id)
+        //{
+        //    var book = _db.Books.Include(b => b.Authors).Select(b => new BookDetailDto()
+        //    {
+        //        Id = b.Id,
+        //        Title = b.Title,
+        //        AuthorName = b.Authors.First().Name,
+        //    })
+        //   .SingleOrDefault(b => b.Id == id);
+
+        //    //var dbBook = _db.Books
+        //    //    //.Include(b => b.BookAuthors)
+        //    //    .Include(p => p.Publisher)
+        //    //    .SingleOrDefault(book => book.Id == id);
+
+
+        //    //var book = await _db.Books.Include(b => b.Authors).Select(b =>
+        //    //new BookDetailDto()
+        //    //{
+        //    //    Id = b.Id,
+        //    //    Title = b.Title,
+        //    //    AuthorName = b.Authors.FirstOrDefault().Name,
+        //    //    Publisher = b.Publisher.Name
+        //    //}).SingleOrDefaultAsync(b => b.Id == id);
+
+        //    return book;
+
+        //}
+
+        public async Task<Book?> GetById(long id)
         {
             var dbBook = _db.Books
                 //.Include(b => b.BookAuthors)
                 .Include(p => p.Publisher)
-                .SingleOrDefault(book=> book.Id == id);
+                .SingleOrDefault(book => book.Id == id);
 
             if (dbBook == null)
                 return null;
@@ -29,13 +75,15 @@ namespace API_EFCoreDbFirst.DataManager
             return dbBook;
         }
 
+     
+
         public async Task<IEnumerable<Book>?> GetAll()
         {
-            try 
+            try
             {
                 return _db.Books
                     //.Include(b=> b.BookAuthors)
-                    .Include(p=> p.Publisher)
+                    .Include(p => p.Publisher)
                     .ToList();
             }
             catch (Exception)
@@ -51,15 +99,15 @@ namespace API_EFCoreDbFirst.DataManager
                 await _db.Books.AddAsync(entity);
                 await _db.SaveChangesAsync();
 
-                return await _db.Books.FindAsync(entity.Id); 
+                return await _db.Books.FindAsync(entity.Id);
             }
             catch (Exception)
             {
                 return null;
             }
-        } 
+        }
 
-        public async Task<Book?> Update(long id, [FromBody] Book entityToUpdate)
+        public async Task<Book?> Update(long id, Book entityToUpdate)
         {
             try
             {
@@ -94,6 +142,36 @@ namespace API_EFCoreDbFirst.DataManager
             {
                 return (false, $"Si è verificato un errore. -> {ex.Message}");
             }
+        }
+
+        public async Task<BookDetailDto> GetDetailsDto(long id)
+        {
+            _db.ChangeTracker.LazyLoadingEnabled = true;
+
+            var author = _db.Authors
+                .SingleOrDefault(b => b.Id == id);
+
+            var book = _db.Books
+                .Include(c => c.Category)
+                .Include(x => x.Publisher)
+                .SingleOrDefault(b => b.Id == id);
+
+
+            // var book = _db.Books
+            //     .Include(c=> c.Category)
+            //     .Include(x=> x.Publisher)
+            //     .Select(b => new BookDetailDto()
+            // {
+            //     Id = b.Id,
+            //     Title = b.Title,
+            //     AuthorName = author.Name ?? "Autore NoN presente",
+            //     Category = b.Category.Name,
+            //     Publisher = b.Publisher.Name
+            // })
+            //.SingleOrDefault(b => b.Id == id);
+            // return book;
+
+            return BookMapperDto.MapBookToDto(book, author);
         }
     }
 }

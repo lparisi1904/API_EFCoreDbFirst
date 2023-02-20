@@ -1,13 +1,17 @@
-﻿using API_EFCoreDbFirst.Dto;
+﻿using API_EFCoreDbFirst.DTOs;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
+using API_EFCoreDbFirst.Utilities.MapToDto;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Linq;
+using Castle.Core.Resource;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class AuthorDataManager : IService<Author>
+    public class AuthorDataManager : IService<Author, AuthorDetailsDto>
     {
         readonly BookStoreContext _db;
 
@@ -16,7 +20,7 @@ namespace API_EFCoreDbFirst.DataManager
             _db = storeContext;
         }
 
-        public async Task<Author?> Get(long id)
+        public async Task<Author?> GetById(long id)
         {
             try
             {
@@ -36,7 +40,7 @@ namespace API_EFCoreDbFirst.DataManager
         {
             try
             {
-                return  _db.Authors
+                return _db.Authors
                         //.Include(c => c.AuthorContact)
                         .ToList();
             }
@@ -106,6 +110,34 @@ namespace API_EFCoreDbFirst.DataManager
             {
                 return (false, $"Si è verificato un errore. ->  {ex.Message}");
             }
+        }
+
+        public async Task<AuthorDetailsDto> GetDetailsDto(long id)
+        {
+            //var book = _db.Books
+            //    .SingleOrDefault(b => b.Id == id);
+
+            var listBooks = new List<BookDetailDto>();
+
+            var books =
+                from book in _db.Books
+                from authors in _db.Authors
+                where authors.Id == id
+                select new BookDetailDto()
+                {
+                    Title = book.Title,
+                    Category = book.Category.Name,
+                    Publisher = book.Publisher.Name,
+                };
+
+            books.ToList().ForEach(b => listBooks.Add(b));
+
+            var author = _db.Authors
+                .Include(x => x.AuthorContact)
+                       .FirstOrDefault(i => i.Id == id);
+
+            return AuthorMapperDto.MapAuthorToDto(author,
+                                                  listBooks);
         }
     }
 }

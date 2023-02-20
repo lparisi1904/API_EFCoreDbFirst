@@ -1,5 +1,5 @@
 using API_EFCoreDbFirst.DataManager;
-using API_EFCoreDbFirst.Dto;
+using API_EFCoreDbFirst.DTOs;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +19,9 @@ builder.Services.AddDbContext<BookStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
 
 // Register Library Service to use it with Dependency Injection in Controllers
-builder.Services.AddScoped<IService<Author>, AuthorDataManager>();
-builder.Services.AddScoped<IService<Book>, BookDataManager>();
-builder.Services.AddScoped<IService<Publisher>, PublisherDataManager>();
+builder.Services.AddScoped<IService<Author, AuthorDetailsDto>, AuthorDataManager>();
+builder.Services.AddScoped<IService<Book, BookDetailDto>, BookDataManager>();
+builder.Services.AddScoped<IService<Publisher, PublisherDto>, PublisherDataManager>();
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(

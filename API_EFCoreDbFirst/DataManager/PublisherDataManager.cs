@@ -1,4 +1,4 @@
-﻿using API_EFCoreDbFirst.Dto;
+﻿using API_EFCoreDbFirst.DTOs;
 using API_EFCoreDbFirst.Models;
 using API_EFCoreDbFirst.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_EFCoreDbFirst.DataManager
 {
-    public class PublisherDataManager : IService<Publisher>
+    public class PublisherDataManager : IService<Publisher, PublisherDto>
     {
         readonly BookStoreContext _db;
 
@@ -20,7 +20,7 @@ namespace API_EFCoreDbFirst.DataManager
                     .ToListAsync();
         }
 
-        public async Task<Publisher?> Get(long id)
+        public async Task<Publisher?> GetById(long id)
         {
             try
             {
@@ -85,5 +85,9 @@ namespace API_EFCoreDbFirst.DataManager
             }
         }
 
+        public Task<PublisherDto> GetDetailsDto(long id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
